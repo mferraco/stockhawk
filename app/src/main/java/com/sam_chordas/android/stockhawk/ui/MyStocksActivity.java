@@ -139,9 +139,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
         mTitle = getTitle();
         if (Utils.isNetworkConnected(cm)) {
-            recyclerView.setVisibility(View.VISIBLE);
-            emptyTextView.setVisibility(View.GONE);
-
             long period = 3600L;
             long flex = 10L;
             String periodicTag = "periodic";
@@ -159,10 +156,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
             // Schedule task with tag "periodic." This ensure that only the stocks present in the DB
             // are updated.
             GcmNetworkManager.getInstance(this).schedule(periodicTask);
-        } else {
-            recyclerView.setVisibility(View.GONE);
-            emptyTextView.setVisibility(View.VISIBLE);
-            emptyTextView.setText(getString(R.string.empty_data_text_no_network_connection));
         }
     }
 
@@ -241,12 +234,17 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
             if (Utils.isNetworkConnected(cm)) {
                 emptyTextView.setText(getString(R.string.empty_data_text));
             } else {
-                emptyTextView.setText(getString(R.string.empty_data_text_no_network_connection));
+                emptyTextView.setText(getString(R.string.no_network_connection));
             }
 
         } else {
-            recyclerView.setVisibility(View.VISIBLE);
-            emptyTextView.setVisibility(View.GONE);
+            if (Utils.isNetworkConnected(cm)) {
+                recyclerView.setVisibility(View.VISIBLE);
+                emptyTextView.setVisibility(View.GONE);
+            } else {
+                emptyTextView.setVisibility(View.VISIBLE);
+                emptyTextView.setText(getString(R.string.no_network_connection_stocks_outdated));
+            }
         }
 
     }
