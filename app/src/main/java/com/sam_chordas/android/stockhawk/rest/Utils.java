@@ -95,4 +95,38 @@ public class Utils {
     }
     return builder.build();
   }
+
+    public static boolean symbolFound(String json) {
+        JSONObject jsonObject;
+        JSONArray resultsArray;
+        try{
+            jsonObject = new JSONObject(json);
+            if (jsonObject.length() != 0){
+                jsonObject = jsonObject.getJSONObject("query");
+                int count = Integer.parseInt(jsonObject.getString("count"));
+                if (count == 1){
+                    jsonObject = jsonObject.getJSONObject("results")
+                            .getJSONObject("quote");
+                    if (jsonObject.optString("Bid").equals("null")) {
+                        return false;
+                    }
+                } else{
+                    resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
+
+                    if (resultsArray != null && resultsArray.length() != 0){
+                        for (int i = 0; i < resultsArray.length(); i++){
+                            jsonObject = resultsArray.getJSONObject(i);
+                            if (jsonObject.optString("Bid").equals("null")) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e){
+            Log.e(LOG_TAG, "String to JSON failed: " + e);
+        }
+
+        return true;
+    }
 }

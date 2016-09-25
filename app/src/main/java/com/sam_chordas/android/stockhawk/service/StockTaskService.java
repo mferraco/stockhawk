@@ -35,6 +35,10 @@ public class StockTaskService extends GcmTaskService {
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
 
+    public StockTaskService() {
+        // No-op
+    }
+
     public StockTaskService(Context context) {
         mContext = context;
     }
@@ -115,18 +119,22 @@ public class StockTaskService extends GcmTaskService {
         try {
             getResponse = fetchData(urlString);
             result = GcmNetworkManager.RESULT_SUCCESS;
-            try {
-                ContentValues contentValues = new ContentValues();
-                // update ISCURRENT to 0 (false) so new data is current
-                if (isUpdate) {
-                    contentValues.put(QuoteColumns.ISCURRENT, 0);
-                    mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
-                            null, null);
+
+            if (Utils.symbolFound(getResponse)) {
+                // only attempt to save the stock data if the stock was found
+                try {
+                    ContentValues contentValues = new ContentValues();
+                    // update ISCURRENT to 0 (false) so new data is current
+                    if (isUpdate) {
+                        contentValues.put(QuoteColumns.ISCURRENT, 0);
+                        mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
+                                null, null);
+                    }
+                    mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
+                            Utils.quoteJsonToContentVals(getResponse));
+                } catch (RemoteException | OperationApplicationException e) {
+                    Log.e(LOG_TAG, "Error applying batch insert", e);
                 }
-                mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-                        Utils.quoteJsonToContentVals(getResponse));
-            } catch (RemoteException | OperationApplicationException e) {
-                Log.e(LOG_TAG, "Error applying batch insert", e);
             }
         } catch (IOException e) {
             e.printStackTrace();
