@@ -52,16 +52,15 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     private QuoteCursorAdapter mCursorAdapter;
     private Context mContext;
     private Cursor mCursor;
-    RecyclerView recyclerView;
-
-    TextView emptyTextView;
+    private ConnectivityManager cm;
+    private RecyclerView recyclerView;
+    private TextView emptyTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-        final ConnectivityManager cm =
-                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
 
         setContentView(R.layout.activity_my_stocks);
@@ -239,7 +238,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         if (count == 0) {
             recyclerView.setVisibility(View.GONE);
             emptyTextView.setVisibility(View.VISIBLE);
-            emptyTextView.setText(getString(R.string.empty_data_text));
+            if (Utils.isNetworkConnected(cm)) {
+                emptyTextView.setText(getString(R.string.empty_data_text));
+            } else {
+                emptyTextView.setText(getString(R.string.empty_data_text_no_network_connection));
+            }
+
         } else {
             recyclerView.setVisibility(View.VISIBLE);
             emptyTextView.setVisibility(View.GONE);

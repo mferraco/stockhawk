@@ -122,7 +122,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
     public Cursor swapCursor(Cursor newCursor) {
         Cursor oldCursor = super.swapCursor(newCursor);
 
-        if (mContext instanceof MyStocksActivity) {
+        if (mContext instanceof MyStocksActivity && newCursor != null) {
             ((MyStocksActivity) mContext).toggleEmptyView(newCursor.getCount());
         }
 
