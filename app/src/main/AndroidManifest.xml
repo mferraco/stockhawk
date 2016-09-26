@@ -40,6 +40,22 @@
             android:authorities="com.sam_chordas.android.stockhawk.data.QuoteProvider"
             android:name="com.sam_chordas.android.stockhawk.data.generated.QuoteProvider"
             android:exported="false"/>
+        
+        <receiver
+            android:name=".widget.StocksWidgetProvider"
+            android:label="@string/widget_title">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.android.sunshine.app.ACTION_DATA_UPDATED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_stocks"/>
+        </receiver>
+        <service android:name=".widget.StockWidgetIntentService" />
+        <service android:name=".widget.StockWidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
     </application>
 
 </manifest>

@@ -14,4 +14,8 @@
     <string name="no_network_connection">No network connection.</string>
     <string name="empty_data_text">Add a stock using the button below.</string>
     <string name="no_network_connection_stocks_outdated">No network connection.  Stock quotes may be inaccurate.</string>
+
+    <!-- Widget -->
+    <string name="widget_title">StockHawk Widget</string>
+    <string name="widget_empty_text">Open StockHawk to Add Stocks to List</string>
 </resources>
