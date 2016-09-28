@@ -1,5 +1,7 @@
 package com.sam_chordas.android.stockhawk.rest;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -17,6 +19,7 @@ import com.sam_chordas.android.stockhawk.data.QuoteProvider;
 import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperAdapter;
 import com.sam_chordas.android.stockhawk.touch_helper.ItemTouchHelperViewHolder;
 import com.sam_chordas.android.stockhawk.ui.MyStocksActivity;
+import com.sam_chordas.android.stockhawk.widget.StocksWidgetProvider;
 
 /**
  * Created by sam_chordas on 10/6/15.
@@ -124,8 +127,20 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
 
         if (mContext instanceof MyStocksActivity && newCursor != null) {
             ((MyStocksActivity) mContext).toggleEmptyView(newCursor.getCount());
+
+            // update the widget to reflect data change
+            updateWidgets();
         }
 
         return oldCursor;
+    }
+
+    private void updateWidgets() {
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+        ComponentName thisWidget = new ComponentName(mContext, StocksWidgetProvider.class);
+        int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds[0], R.id.widget_list_view);
+
+
     }
 }
