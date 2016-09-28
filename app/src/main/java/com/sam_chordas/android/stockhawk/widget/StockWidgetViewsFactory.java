@@ -3,6 +3,7 @@ package com.sam_chordas.android.stockhawk.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.Binder;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -22,24 +23,24 @@ public class StockWidgetViewsFactory implements RemoteViewsService.RemoteViewsFa
 
     public StockWidgetViewsFactory(Context context, Intent intent) {
         mContext = context;
+    }
 
+    @Override
+    public void onCreate() {
         // get cursor here and set it
         mCursor = mContext.getContentResolver().query(
                 QuoteProvider.Quotes.CONTENT_URI,
-                new String[]{QuoteColumns.SYMBOL},
+                new String[]{"Distinct " + QuoteColumns.SYMBOL},
                 null,
                 null,
                 null);
     }
 
     @Override
-    public void onCreate() {
-        // No-op
-    }
-
-    @Override
     public void onDestroy() {
-        // No-op
+        if (mCursor != null) {
+            mCursor.close();
+        }
     }
 
     @Override
@@ -85,6 +86,19 @@ public class StockWidgetViewsFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public void onDataSetChanged() {
-        // No-op
+        // TODO: figure out how to get this to update the data in the widget...
+
+        final long token = Binder.clearCallingIdentity();
+        try {
+            mCursor = mContext.getContentResolver().query(
+                    QuoteProvider.Quotes.CONTENT_URI,
+                    new String[]{"Distinct " + QuoteColumns.SYMBOL},
+                    null,
+                    null,
+                    null);
+        } finally {
+            Binder.restoreCallingIdentity(token);
+        }
+
     }
 }

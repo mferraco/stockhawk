@@ -4,9 +4,9 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.widget.RemoteViews;
 
-import com.sam_chordas.android.stockhawk.service.StockTaskService;
+import com.sam_chordas.android.stockhawk.R;
 
 /**
  * App Widget Provider for the stock widget.
@@ -15,20 +15,17 @@ public class StocksWidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        context.startService(new Intent(context, StockWidgetIntentService.class));
-    }
+        for (int i = 0; i < appWidgetIds.length; i++) {
+            Intent serviceIntent = new Intent(context, StockWidgetService.class);
+            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
 
-    @Override
-    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-        context.startService(new Intent(context, StockWidgetIntentService.class));
-    }
+            RemoteViews widget = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
+            widget.setRemoteAdapter(R.id.widget_list_view, serviceIntent);
+            widget.setEmptyView(R.id.widget_list_view, R.id.empty_view);
 
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        super.onReceive(context, intent);
-
-        if (StockTaskService.ACTION_DATA_UPDATED.equals(intent.getAction())) {
-            context.startService(new Intent(context, StockWidgetIntentService.class));
+            appWidgetManager.updateAppWidget(appWidgetIds[i], widget);
         }
+
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 }
