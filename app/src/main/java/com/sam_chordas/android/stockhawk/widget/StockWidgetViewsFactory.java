@@ -30,9 +30,9 @@ public class StockWidgetViewsFactory implements RemoteViewsService.RemoteViewsFa
         // get cursor here and set it
         mCursor = mContext.getContentResolver().query(
                 QuoteProvider.Quotes.CONTENT_URI,
-                new String[]{"Distinct " + QuoteColumns.SYMBOL},
-                null,
-                null,
+                new String[]{"Distinct " + QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.PERCENT_CHANGE},
+                QuoteColumns.ISCURRENT + " = ?",
+                new String[]{"1"},
                 null);
     }
 
@@ -55,6 +55,8 @@ public class StockWidgetViewsFactory implements RemoteViewsService.RemoteViewsFa
         boolean movedToPosition = mCursor.moveToPosition(position);
         if (movedToPosition) {
             row.setTextViewText(R.id.stock_symbol, mCursor.getString(mCursor.getColumnIndex("symbol")));
+            row.setTextViewText(R.id.bid_price, mCursor.getString(mCursor.getColumnIndex("bid_price")));
+            row.setTextViewText(R.id.change, mCursor.getString(mCursor.getColumnIndex("percent_change")));
 
             // TODO: determine which detail view to open from widget here
             Intent intent = new Intent(mContext, MyStocksActivity.class);
@@ -92,9 +94,9 @@ public class StockWidgetViewsFactory implements RemoteViewsService.RemoteViewsFa
         try {
             mCursor = mContext.getContentResolver().query(
                     QuoteProvider.Quotes.CONTENT_URI,
-                    new String[]{"Distinct " + QuoteColumns.SYMBOL},
-                    null,
-                    null,
+                    new String[]{"Distinct " + QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.PERCENT_CHANGE},
+                    QuoteColumns.ISCURRENT + " = ?",
+                    new String[]{"1"},
                     null);
         } finally {
             Binder.restoreCallingIdentity(token);

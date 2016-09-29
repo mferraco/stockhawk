@@ -139,7 +139,7 @@ public class QuoteCursorAdapter extends CursorRecyclerViewAdapter<QuoteCursorAda
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
         ComponentName thisWidget = new ComponentName(mContext, StocksWidgetProvider.class);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds[0], R.id.widget_list_view);
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list_view);
 
 
     }
