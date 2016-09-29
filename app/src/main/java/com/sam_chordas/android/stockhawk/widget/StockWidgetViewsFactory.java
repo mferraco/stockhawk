@@ -28,12 +28,7 @@ public class StockWidgetViewsFactory implements RemoteViewsService.RemoteViewsFa
     @Override
     public void onCreate() {
         // get cursor here and set it
-        mCursor = mContext.getContentResolver().query(
-                QuoteProvider.Quotes.CONTENT_URI,
-                new String[]{"Distinct " + QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.PERCENT_CHANGE},
-                QuoteColumns.ISCURRENT + " = ?",
-                new String[]{"1"},
-                null);
+        query();
     }
 
     @Override
@@ -92,15 +87,19 @@ public class StockWidgetViewsFactory implements RemoteViewsService.RemoteViewsFa
 
         final long token = Binder.clearCallingIdentity();
         try {
-            mCursor = mContext.getContentResolver().query(
-                    QuoteProvider.Quotes.CONTENT_URI,
-                    new String[]{"Distinct " + QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.PERCENT_CHANGE},
-                    QuoteColumns.ISCURRENT + " = ?",
-                    new String[]{"1"},
-                    null);
+            query();
         } finally {
             Binder.restoreCallingIdentity(token);
         }
 
+    }
+
+    private void query() {
+        mCursor = mContext.getContentResolver().query(
+                QuoteProvider.Quotes.CONTENT_URI,
+                new String[]{"Distinct " + QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE, QuoteColumns.PERCENT_CHANGE},
+                QuoteColumns.ISCURRENT + " = ?",
+                new String[]{"1"},
+                null);
     }
 }
