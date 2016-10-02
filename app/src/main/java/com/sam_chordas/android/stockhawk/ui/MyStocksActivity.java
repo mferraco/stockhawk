@@ -39,10 +39,6 @@ import com.sam_chordas.android.stockhawk.touch_helper.SimpleItemTouchHelperCallb
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
-
-    /**
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
@@ -56,6 +52,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     private RecyclerView recyclerView;
     private TextView emptyTextView;
 
+
+    public static final String SYMBOL_ARGUMENT = "symbolArgument";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,8 +83,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 new RecyclerViewItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View v, int position) {
-                        //TODO:
-                        // do something on item click
+                        // launch detail view on click
+                        mCursor.moveToPosition(position);
+                        String symbol = mCursor.getString(mCursor.getColumnIndex("symbol"));
+                        Intent intent = new Intent(mContext, StockDetailActivity.class);
+                        intent.putExtra(SYMBOL_ARGUMENT, symbol);
+                        startActivity(intent);
                     }
                 }));
         recyclerView.setAdapter(mCursorAdapter);
