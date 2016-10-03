@@ -35,7 +35,6 @@ public class StockDetailActivity extends AppCompatActivity implements StockHisto
 
     @Override
     public void onStockHistorySuccess(List<HistoricalStockData> stockHistoryData) {
-        Log.d(TAG, "SUCCEEDED");
         Log.d(TAG, stockHistoryData.toString());
     }
 

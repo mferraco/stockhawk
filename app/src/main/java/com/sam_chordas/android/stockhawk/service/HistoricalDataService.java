@@ -11,14 +11,19 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A class designated to retrieve historical stock data and give it back to the caller
  */
 public class HistoricalDataService implements Callback {
+
+    private static final String TAG = HistoricalDataService.class.getSimpleName();
 
     private StockHistoryCallback mCallback;
 
@@ -56,8 +61,19 @@ public class HistoricalDataService implements Callback {
     }
 
     private List<HistoricalStockData> getHistoricalDataArray(JSONArray historicalJsonData) {
-        // format each json object in hte array into a HistoricalStockData object and return the list
-        return null;
+        List<HistoricalStockData> stockDataList = new ArrayList<>();
+        for (int i = 0; i < historicalJsonData.length(); i++) {
+            try {
+                JSONObject dataInstanceJson = historicalJsonData.getJSONObject(i);
+                HistoricalStockData stockData = HistoricalStockData.fromJson(dataInstanceJson);
+                stockDataList.add(stockData);
+            } catch (JSONException e) {
+                Log.e(TAG, "could not parse json data instance");
+            }
+
+        }
+
+        return stockDataList;
     }
 
 
@@ -70,6 +86,14 @@ public class HistoricalDataService implements Callback {
 
     @Override
     public void onResponse(Response response) throws IOException {
-        Log.d("HistoricalDataService", response.body().string());
+        String jsonp = response.body().string();
+        try {
+            String json = jsonp.substring(jsonp.indexOf("(") + 1, jsonp.lastIndexOf(")"));
+            JSONObject jsonResponse = new JSONObject(json);
+            JSONArray historicalData = jsonResponse.optJSONArray("series");
+            mCallback.onStockHistorySuccess(getHistoricalDataArray(historicalData));
+        } catch (JSONException e) {
+            Log.e(TAG, "could not parse JSON in historical data response");
+        }
     }
 }
