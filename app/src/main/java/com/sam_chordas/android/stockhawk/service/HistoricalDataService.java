@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.callbacks.StockHistoryCallback;
 import com.sam_chordas.android.stockhawk.data.HistoricalStockData;
+import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -31,22 +32,12 @@ public class HistoricalDataService implements Callback {
 
     private Context mContext;
 
-    private static HistoricalDataService mService;
-
     private static final String BASE_URL = "http://chartapi.finance.yahoo.com/instrument/1.0/";
     private static final String TRAILING_URL = "/chartdata;type=quote;range=1y/json";
 
-    private HistoricalDataService(Context context, StockHistoryCallback callback) {
+    public HistoricalDataService (Context context, StockHistoryCallback callback) {
         mContext = context;
         mCallback = callback;
-    }
-
-    public static HistoricalDataService getInstance(Context context, StockHistoryCallback callback) {
-        if (mService == null) {
-            mService = new HistoricalDataService(context, callback);
-        }
-
-        return mService;
     }
 
     public void getHistoricalStockData(String symbol) {
@@ -57,7 +48,8 @@ public class HistoricalDataService implements Callback {
                 .build();
 
         // queue up the request to run on another thread
-        client.newCall(request).enqueue(this);
+        Call call = client.newCall(request);
+        call.enqueue(this);
     }
 
     private List<HistoricalStockData> getHistoricalDataArray(JSONArray historicalJsonData) {
