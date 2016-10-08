@@ -11,6 +11,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.sam_chordas.android.stockhawk.R;
 import com.sam_chordas.android.stockhawk.callbacks.StockHistoryCallback;
 import com.sam_chordas.android.stockhawk.data.HistoricalStockData;
+import com.sam_chordas.android.stockhawk.data.HistoricalStockDataRanges;
 import com.sam_chordas.android.stockhawk.service.HistoricalDataService;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class StockDetailActivity extends AppCompatActivity implements StockHisto
     }
 
     @Override
-    public void onStockHistorySuccess(final List<HistoricalStockData> stockHistoryData) {
+    public void onStockHistorySuccess(final List<HistoricalStockData> stockHistoryData, HistoricalStockDataRanges rangeData) {
 
         runOnUiThread(new Runnable() {
             public void run() {
@@ -63,18 +64,12 @@ public class StockDetailActivity extends AppCompatActivity implements StockHisto
                 final LineData lineData = new LineData(xLabels, dataSet);
                 chart.setData(lineData);
 
+                // set up parameters for the chart here
+                
+
                 chart.invalidate();
             }
         });
-        /*
-        LineDataSet dataSet = new LineDataSet(entries, name);
-        LineData lineData = new LineData(xvalues, dataSet);
-
-        lineChart.animateX(2500);
-        lineChart.setData(lineData);
-         */
-
-
     }
 
     @Override

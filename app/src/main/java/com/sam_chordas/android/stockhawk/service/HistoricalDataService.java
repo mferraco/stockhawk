@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.sam_chordas.android.stockhawk.callbacks.StockHistoryCallback;
 import com.sam_chordas.android.stockhawk.data.HistoricalStockData;
+import com.sam_chordas.android.stockhawk.data.HistoricalStockDataRanges;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
@@ -83,7 +84,8 @@ public class HistoricalDataService implements Callback {
             String json = jsonp.substring(jsonp.indexOf("(") + 1, jsonp.lastIndexOf(")"));
             JSONObject jsonResponse = new JSONObject(json);
             JSONArray historicalData = jsonResponse.optJSONArray("series");
-            mCallback.onStockHistorySuccess(getHistoricalDataArray(historicalData));
+            JSONObject rangeData = jsonResponse.optJSONObject("ranges");
+            mCallback.onStockHistorySuccess(getHistoricalDataArray(historicalData), HistoricalStockDataRanges.fromJson(rangeData));
         } catch (JSONException e) {
             Log.e(TAG, "could not parse JSON in historical data response");
         }
