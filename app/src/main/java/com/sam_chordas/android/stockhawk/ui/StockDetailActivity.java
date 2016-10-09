@@ -1,10 +1,14 @@
 package com.sam_chordas.android.stockhawk.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -42,6 +46,9 @@ public class StockDetailActivity extends AppCompatActivity implements StockHisto
         mSymbol = getIntent().getStringExtra(MyStocksActivity.SYMBOL_ARGUMENT);
 
         if (mSymbol != null) {
+            TextView titleTextView = (TextView) findViewById(R.id.stock_title_textview);
+            titleTextView.setText(mSymbol);
+
             // tell historical data service to get the data
             mService.getHistoricalStockData(mSymbol);
         }
@@ -61,12 +68,28 @@ public class StockDetailActivity extends AppCompatActivity implements StockHisto
                 }
 
                 LineDataSet dataSet = new LineDataSet(entries, getString(R.string.chart_label));
+                dataSet.setDrawCircles(false);
+
                 final LineData lineData = new LineData(xLabels, dataSet);
+                lineData.setDrawValues(false);
+
                 chart.setData(lineData);
 
                 // set up parameters for the chart here
-                
 
+                XAxis xAxis = chart.getXAxis();
+                xAxis.setEnabled(true);
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xAxis.setTextColor(Color.WHITE);
+                xAxis.setDrawLabels(true);
+
+                YAxis yAxisLeft = chart.getAxisLeft();
+                yAxisLeft.setTextColor(Color.WHITE);
+
+                YAxis yAxisRight = chart.getAxisRight();
+                yAxisRight.setEnabled(false);
+
+                chart.setDescription("");
                 chart.invalidate();
             }
         });

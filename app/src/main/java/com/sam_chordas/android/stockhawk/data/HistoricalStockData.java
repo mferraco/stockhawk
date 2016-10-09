@@ -7,6 +7,10 @@ import android.util.Log;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * An object representing one instance of historical stock data
  */
@@ -26,7 +30,8 @@ public class HistoricalStockData implements Parcelable {
         HistoricalStockData stock = new HistoricalStockData();
 
         stock.setSymbol(stockDataJson.optString("symbol"));
-        stock.setDate(stockDataJson.optString("date"));
+        String dateVal = formatDateString(stockDataJson.optString("Date"));
+        stock.setDate(dateVal);
         stock.setClose(stockDataJson.optDouble("close"));
 
         return stock;
@@ -99,4 +104,17 @@ public class HistoricalStockData implements Parcelable {
         }
     };
 
+
+    private static String formatDateString(String dateString) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        try {
+            Date newDate = format.parse(dateString);
+            format = new SimpleDateFormat("M/d/yy");
+            return format.format(newDate);
+        } catch (ParseException e) {
+            Log.e(TAG, e.getMessage());
+        }
+
+        return "";
+    }
 }

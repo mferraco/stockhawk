@@ -1,12 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/stock_title_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/StockSymbolTextStyle"
+        android:layout_margin="@dimen/stock_title_margin"/>
 
     <com.github.mikephil.charting.charts.LineChart
-        xmlns:chart="http://schemas.android.com/apk/res-auto"
         android:id="@+id/linechart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="@dimen/stock_chart_height"
+        android:layout_margin="@dimen/stock_chart_margin"/>
 
-</FrameLayout>
+</LinearLayout>
