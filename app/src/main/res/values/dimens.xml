@@ -15,5 +15,6 @@
     <dimen name="stock_chart_height">200dp</dimen>
     <dimen name="stock_title_margin">16dp</dimen>
     <dimen name="stock_chart_margin">8dp</dimen>
+    <dimen name="stock_details_textsize">24sp</dimen>
 
 </resources>

@@ -28,11 +28,12 @@ public class StockDetailActivity extends AppCompatActivity implements StockHisto
 
     private static final String TAG = StockDetailActivity.class.getSimpleName();
 
-    String mSymbol;
-
-    LineChart chart;
-
+    private String mSymbol;
+    private LineChart chart;
     private HistoricalDataService mService;
+
+    private TextView yearlyHighTextView;
+    private TextView yearlyLowTextView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,16 +56,25 @@ public class StockDetailActivity extends AppCompatActivity implements StockHisto
     }
 
     @Override
-    public void onStockHistorySuccess(final List<HistoricalStockData> stockHistoryData, HistoricalStockDataRanges rangeData) {
+    public void onStockHistorySuccess(final List<HistoricalStockData> stockHistoryData, final HistoricalStockDataRanges rangeData) {
 
         runOnUiThread(new Runnable() {
             public void run() {
 
+                List<String> contentDescriptions = new ArrayList<String>();
+
                 List<Entry> entries = new ArrayList<>();
                 List<String> xLabels = new ArrayList<>();
                 for (int i = 0; i < stockHistoryData.size(); i++) {
-                    xLabels.add(stockHistoryData.get(i).getDate());
-                    entries.add(new Entry(stockHistoryData.get(i).getClose().floatValue(), i));
+                    String xLabel = stockHistoryData.get(i).getDate();
+                    xLabels.add(xLabel);
+
+                    Float value = stockHistoryData.get(i).getClose().floatValue();
+                    entries.add(new Entry(value, i));
+
+                    StringBuilder stringBuilder = new StringBuilder();
+                    stringBuilder.append(getString(R.string.chart_content_description, xLabel, value));
+                    chart.setContentDescription(stringBuilder.toString());
                 }
 
                 LineDataSet dataSet = new LineDataSet(entries, getString(R.string.chart_label));
@@ -91,6 +101,12 @@ public class StockDetailActivity extends AppCompatActivity implements StockHisto
 
                 chart.setDescription("");
                 chart.invalidate();
+
+                // Update other UI values
+                yearlyHighTextView = (TextView) findViewById(R.id.yearly_high_textview);
+                yearlyHighTextView.setText(getString(R.string.yearly_high, rangeData.getHighMax()));
+                yearlyLowTextView = (TextView) findViewById(R.id.yearly_low_textview);
+                yearlyLowTextView.setText(getString(R.string.yearly_low, rangeData.getLowMin()));
             }
         });
     }
