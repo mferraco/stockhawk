@@ -61,7 +61,7 @@ public class StockDetailActivity extends AppCompatActivity implements StockHisto
         runOnUiThread(new Runnable() {
             public void run() {
 
-                List<String> contentDescriptions = new ArrayList<String>();
+                StringBuilder stringBuilder = new StringBuilder();
 
                 List<Entry> entries = new ArrayList<>();
                 List<String> xLabels = new ArrayList<>();
@@ -72,10 +72,10 @@ public class StockDetailActivity extends AppCompatActivity implements StockHisto
                     Float value = stockHistoryData.get(i).getClose().floatValue();
                     entries.add(new Entry(value, i));
 
-                    StringBuilder stringBuilder = new StringBuilder();
                     stringBuilder.append(getString(R.string.chart_content_description, xLabel, value));
-                    chart.setContentDescription(stringBuilder.toString());
                 }
+
+                chart.setContentDescription(stringBuilder.toString());
 
                 LineDataSet dataSet = new LineDataSet(entries, getString(R.string.chart_label));
                 dataSet.setDrawCircles(false);
