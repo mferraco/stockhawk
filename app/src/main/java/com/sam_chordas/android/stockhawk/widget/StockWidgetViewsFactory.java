@@ -53,7 +53,6 @@ public class StockWidgetViewsFactory implements RemoteViewsService.RemoteViewsFa
             row.setTextViewText(R.id.bid_price, mCursor.getString(mCursor.getColumnIndex("bid_price")));
             row.setTextViewText(R.id.change, mCursor.getString(mCursor.getColumnIndex("percent_change")));
 
-            // TODO: determine which detail view to open from widget here
             Intent intent = new Intent(mContext, MyStocksActivity.class);
             row.setOnClickFillInIntent(R.id.stock_symbol, intent);
         }
@@ -83,8 +82,6 @@ public class StockWidgetViewsFactory implements RemoteViewsService.RemoteViewsFa
 
     @Override
     public void onDataSetChanged() {
-        // TODO: figure out how to get this to update the data in the widget...
-
         final long token = Binder.clearCallingIdentity();
         try {
             query();
